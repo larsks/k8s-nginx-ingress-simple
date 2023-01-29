@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: nginx-ingress
+
+commonLabels:
+  app.kubernetes.io/name: nginx-ingress
+  app.kubernetes.io/instance: nginx-ingress
+
+resources:
+  - https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+
+patches:
+  - target:
+      kind: Service
+      name: ingress-nginx-controller
+    patch: |
+      - op: add
+        path: /spec/ports/0/nodePort
+        value: 30080
+      - op: add
+        path: /spec/ports/1/nodePort
+        value: 30443
